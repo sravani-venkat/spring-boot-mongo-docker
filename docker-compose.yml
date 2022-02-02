@@ -4,6 +4,7 @@ services:
   springboot:
     image: sravanidockerhub/spring-boot-mongo:BUILD_TAG
     restart: always # This will be ignored if we deploy in docker swarm
+    container_name: springbootcontainer
     environment:
     - MONGO_DB_HOSTNAME=mongo
     - MONGO_DB_USERNAME=devdb
@@ -27,6 +28,7 @@ services:
 
   mongo:
     image: mongo
+    container_name: springdbcontainer
     environment:
     - MONGO_INITDB_ROOT_USERNAME=devdb
     - MONGO_INITDB_ROOT_PASSWORD=devdb123
