@@ -14,11 +14,10 @@ node{
     }
     
     stage("Docker Push"){
-        withCredentials([string(credentialsId: 'Docker_Hub_Pwd', variable: 'Docker_Hub_Pwd')]) {
+       withCredentials([string(credentialsId: 'DockerHubPwd', variable: 'Dockerhub_PWD')]) {
           sh "docker login -u sravanidockerhub -p ${Docker_Hub_Pwd}"
+          sh "docker push sravanidockerhub/spring-boot-mongo:${BUILD_NUMBER}"
         }
-        sh "docker push sravanidockerhub/spring-boot-mongo:${BUILD_NUMBER}"
-        
     }
     
     // Remove local image in Jenkins Server
