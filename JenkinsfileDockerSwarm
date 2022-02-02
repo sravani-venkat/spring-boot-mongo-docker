@@ -4,20 +4,20 @@ node{
     }
     
     stage(" Maven Clean Package"){
-      def mavenHome =  tool name: "Maven-3.8.4", type: "maven"
+      def mavenHome =  tool name: "Maven3.8.4", type: "maven"
       def mavenCMD = "${mavenHome}/bin/mvn"
       sh "${mavenCMD} clean package"
     } 
     
     stage("Build Dokcer Image") {
-         sh "docker build -t sravanidockerhub/spring-boot-mongo:{BUILD_NUMBER} ."
+         sh "docker build -t sravanidockerhub/spring-boot-mongo:${BUILD_NUMBER} ."
     }
     
     stage("Docker Push"){
         withCredentials([string(credentialsId: 'Docker_Hub_Pwd', variable: 'Docker_Hub_Pwd')]) {
           sh "docker login -u sravanidockerhub -p ${Docker_Hub_Pwd}"
         }
-        sh "docker push sravanidockerhub/spring-boot-mongo:{BUILD_NUMBER}"
+        sh "docker push sravanidockerhub/spring-boot-mongo:${BUILD_NUMBER}"
         
     }
     
@@ -27,7 +27,7 @@ node{
     }
     
     stage("Update image tag in compose file"){
-        sh "sed s/BUILD_TAG/{BUILD_NUMBER}/g" docker-compose.yml"
+        sh "sed s/$BUILD_TAG/${BUILD_NUMBER}/g" docker-compose.yml"
         }
 
 
