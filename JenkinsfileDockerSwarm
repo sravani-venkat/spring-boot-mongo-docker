@@ -22,7 +22,7 @@ node{
     
     // Remove local image in Jenkins Server
     stage("Remove Local Image"){
-        sh "docker rmi -f dockerhandson/spring-boot-mongo"
+        sh "docker rmi -f sravanidockerhub/spring-boot-mongo"
     }
     
     stage("Update image tag in compose file"){
