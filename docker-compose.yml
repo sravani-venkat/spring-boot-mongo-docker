@@ -1,8 +1,7 @@
 version: '3.1'
-
 services:
   springboot:
-    image: sravanidockerhub/spring-boot-mongo-image:BUILD_TAG
+    image: 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker:1
     restart: always # This will be ignored if we deploy in docker swarm
     container_name: springbootcontainer
     environment:
@@ -15,8 +14,16 @@ services:
     depends_on:
       - mongo
     networks:
-    - springappnetwork  
-   
+    - springappnetwork
+    deploy:  # This will be considered only in docker swarm.
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
   mongo:
     image: mongo
     container_name: springdbcontainer
@@ -28,11 +35,9 @@ services:
     restart: always
     networks:
     - springappnetwork
-    
 volumes:
   mongodb:
     driver: local
-    
 networks:
   springappnetwork:
-    driver: bridge
+    driver: overlay  
