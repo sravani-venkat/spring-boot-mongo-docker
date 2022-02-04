@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   springboot:
-    image: 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker:1
+    image: 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker:BUILD_TAG
     restart: always # This will be ignored if we deploy in docker swarm
     container_name: springbootcontainer
     environment:
