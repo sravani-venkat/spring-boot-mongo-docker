@@ -10,19 +10,19 @@ node{
     } 
     
     stage("Build Docker Image") {
-         sh "docker build -t sravanidockerhub/spring-boot-mongo-image:${BUILD_NUMBER} ."
+         sh " docker build -t 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker:${BUILD_NUMBER} ."
     }
     
     stage("Docker Push"){
        withCredentials([string(credentialsId: 'newdockerpwd', variable: 'newdockerpwd')]) {
           sh "docker login -u sravanidockerhub -p ${newdockerpwd}"
-          sh "docker push sravanidockerhub/spring-boot-mongo-image:${BUILD_NUMBER}"
+          sh "docker push 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker:${BUILD_NUMBER}"
         }
     }
     
     // Remove local image in Jenkins Server
     stage("Remove Local Image"){
-        sh "docker rmi -f sravanidockerhub/spring-boot-mongo-image"
+        sh "docker rmi -f 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker"
     }
     
     stage("Update image tag in compose file"){
@@ -32,8 +32,9 @@ node{
 
     stage("Deploy to docker container"){
         sshagent(['dockerserverSSH']) {
-    	    sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@13.233.100.132:'
-		    sh 'ssh -o StrictHostKeyChecking=no ubuntu@13.233.100.132 docker-compose up -d'
+    	    sh 'scp -o StrictHostKeyChecking=no  docker-compose.yml ubuntu@172.31.15.233:'
+		    //sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.15.233 docker stack rm springboot'
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.15.233 docker stack deploy --prune --compose-file docker-compose.yml springboot'
         }
     }
 }
