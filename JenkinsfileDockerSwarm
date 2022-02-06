@@ -13,8 +13,7 @@ node{
          sh " docker build -t 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker:${BUILD_NUMBER} ."
     }
     
-    stage("Docker Push"){
-       withCredentials([string(credentialsId: 'AWSpwd', variable: 'AWSpwd')]) {
+     stage("Docker Push"){
           sh "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 266538765033.dkr.ecr.ap-south-1.amazonaws.com"
           sh "docker push 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker:${BUILD_NUMBER}"
         }
@@ -25,16 +24,12 @@ node{
         sh "docker rmi -f 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker"
     }
     
-    stage("Update image tag in compose file"){
-        sh "sed -i s/BUILD_TAG/${BUILD_NUMBER}/g docker-compose.yml"
-        }
-
-
-    stage("Deploy to docker container"){
+    stage("Deploy to docker swarm"){
         sshagent(['dockerserverSSH']) {
-    	    sh 'scp -o StrictHostKeyChecking=no  docker-compose.yml ubuntu@172.31.15.233:'
-		    //sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.15.233 docker stack rm springboot'
-                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.31.15.233 docker stack deploy --prune --compose-file docker-compose.yml springboot'
+            sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.15.233 docker stack rm springboot || true"
+    	    sh "scp -o StrictHostKeyChecking=no  docker-compose.yml ubuntu@172.31.15.233:"
+    	    sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.15.23 aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 266538765033.dkr.ecr.ap-south-1.amazonaws.com"
+	    sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.15.23 docker pull 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker:${BUILD_NUMBER}"
+            sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.15.233 docker stack deploy --compose-file docker-compose.yml springboot"
         }
     }
-}
