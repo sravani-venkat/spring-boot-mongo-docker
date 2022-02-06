@@ -21,7 +21,7 @@ node{
     
     // Remove local image in Jenkins Server
     stage("Remove Local Image"){
-        sh "docker rmi -f 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker::${BUILD_NUMBER}"
+        sh "docker rmi -f 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker::${BUILD_NUMBER} || true"
     }
     
     stage("Deploy to docker swarm"){
