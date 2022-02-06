@@ -17,8 +17,6 @@ node{
           sh "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 266538765033.dkr.ecr.ap-south-1.amazonaws.com"
           sh "docker push 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker:${BUILD_NUMBER}"
         }
-    }
-    
     // Remove local image in Jenkins Server
     stage("Remove Local Image"){
         sh "docker rmi -f 266538765033.dkr.ecr.ap-south-1.amazonaws.com/spring-boot-mongo-docker::${BUILD_NUMBER} || true"
@@ -33,3 +31,4 @@ node{
             sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.15.233 docker stack deploy --compose-file docker-compose.yml springboot"
         }
     }
+  }
