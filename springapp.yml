@@ -73,7 +73,7 @@ spec:
            value: devdb
          - name: MONGO_INITDB_ROOT_PASSWORD
            value: devdb@123
-           volumeMounts:
+         volumeMounts:
          - name: mongodbdatavol
            mountPath: /data/db
 ---
