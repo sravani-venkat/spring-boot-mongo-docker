@@ -17,7 +17,7 @@ spec:
       - name: dockerregcred
       containers:
       - name: springappcontainer
-        image: sravanidockerhub/privatespringbootrepo:tagname
+        image: sravanidockerhub/privatespringbootrepo:1
         ports:
         - containerPort: 8080
         resources:
