@@ -13,9 +13,11 @@ spec:
       labels:
         app: springapp
     spec:
+      imagePullSecrets:
+      - name: dockerregcred
       containers:
       - name: springappcontainer
-        image: sravanidockerhub/spring-boot-mongo:2
+        image: sravanidockerhub/privatespringbootrepo:tagname
         ports:
         - containerPort: 8080
         resources:
@@ -27,9 +29,15 @@ spec:
             cpu: 0.5
         env:
         - name: MONGO_DB_USERNAME
-          value: devdb
+          valueFrom:
+            configMapKeyRef:
+              name: springappconfig
+              key: mongodbusername
         - name: MONGO_DB_PASSWORD
-          value: devdb@123
+          valueFrom:
+            secretKeyRef:
+              name: springappsecret
+              key: mongodbpassword
         - name: MONGO_DB_HOSTNAME
           value: mongo
 ---
@@ -70,9 +78,15 @@ spec:
          - containerPort: 27017
          env:
          - name: MONGO_INITDB_ROOT_USERNAME
-           value: devdb
+           valueFrom:
+             configMapKeyRef:
+               name: springappconfig
+               key: mongodbusername
          - name: MONGO_INITDB_ROOT_PASSWORD
-           value: devdb@123
+            valueFrom:
+             secretKeyRef:
+               name: springappsecret
+               key: mongodbpassword
          volumeMounts:
          - name: mongodbdatavol
            mountPath: /data/db
@@ -100,3 +114,4 @@ spec:
   ports:
   - port: 27017
     targetPort: 27017
+
